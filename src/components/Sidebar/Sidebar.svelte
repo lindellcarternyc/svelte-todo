@@ -12,14 +12,24 @@ const user = {
   email: 'lindellcarternyc@gmail.com'
 }
 
+let isAddingList = false
+
+const handleClickNewList = () => {
+  isAddingList = true
+}
+
 </script>
 
 <div class="sidebar">
   <Namebar user={user} />
   <Search searchTerm={searchTerm} handleInput={handleInput}/>
-  <GroupList />
+  <GroupList 
+    isAddingList={isAddingList}
+    on:createList={() => isAddingList = false}
+    on:cancelCreateList={() => isAddingList = false}
+  />
   <div class="buttons">
-    <button class="new-list">
+    <button class="new-list" on:click={handleClickNewList}>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
       </svg>

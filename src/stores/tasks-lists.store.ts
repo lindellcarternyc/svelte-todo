@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
-import type { TaskList, TaskListGroup } from '../interfaces'
+import { v4 as uuid } from 'uuid'
+import type { Task, TaskList, TaskListGroup } from '../interfaces'
 
 const specialLists: TaskList[] = [
   {
@@ -78,13 +79,28 @@ const taskLists: (TaskList | TaskListGroup)[] = [
 ];
 
 const useTaskLists = () => {
-  const { subscribe } = writable({
+  const { subscribe, set, update } = writable({
     specialLists,
     taskLists
   })
 
+  const createList = ({ title }: { title: string}) => {
+    const id = uuid()
+    const list: TaskList = {
+      id,
+      title,
+      tasks: []
+    }
+
+    update(current => ({
+      ...current,
+      taskLists: [...current.taskLists, list]
+    }))
+  }
+
   return {
-    subscribe
+    subscribe,
+    createList
   }
 }
 

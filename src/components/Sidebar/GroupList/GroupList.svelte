@@ -1,10 +1,14 @@
 <script lang="ts">
+import { onDestroy, SvelteComponent } from "svelte"
+
 import type { TaskList, TaskListGroup } from "../../../interfaces";
 import { listStore } from '../../../stores/tasks-lists.store'
+import NewList from "../NewList/NewList.svelte";
 
 import GroupListGroup from "./GroupListGroup.svelte"
 import GroupListItem from "./GroupListItem.svelte"
 
+export let isAddingList: boolean
 
 const isListGroup = (item: any): item is TaskListGroup => {
   return typeof item === 'object' && 'lists' in item
@@ -18,6 +22,7 @@ const unsub = listStore.subscribe(listData => {
   taskLists = listData.taskLists
 })
 
+onDestroy(unsub)
 </script>
 
 <div class="grouplist">
@@ -40,13 +45,16 @@ const unsub = listStore.subscribe(listData => {
         <GroupListItem list={listOrGroup} />
         {/if}
       {/each}
+      {#if isAddingList}
+      <NewList on:createList on:cancelCreateList />
+      {/if}
     </ul>
   </div>
 </div>
 
 <style>
   .grouplist {
-    padding: 0.75rem 0;
+    padding: 0.75rem 0 5.5rem;
     height: calc(100vh - 120px);
     overflow: auto;
   }
